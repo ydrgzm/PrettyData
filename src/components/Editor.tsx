@@ -1,6 +1,6 @@
-
 import React, { useEffect, useRef } from 'react';
-import * as monaco from 'monaco-editor';
+// Import monaco from our custom initialization file instead of directly
+import { monaco } from '../lib/monaco-workers';
 import { editor } from 'monaco-editor';
 
 interface EditorProps {

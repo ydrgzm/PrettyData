@@ -17,4 +17,22 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    outDir: 'dist',
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        "editor.worker": path.resolve(__dirname, 'src/monaco-workers/editor.worker.ts'),
+        "json.worker": path.resolve(__dirname, 'src/monaco-workers/json.worker.ts'),
+        "html.worker": path.resolve(__dirname, 'src/monaco-workers/html.worker.ts'),
+      },
+      output: {
+        entryFileNames(chunkInfo) {
+          return chunkInfo.name.includes('.worker')
+            ? '[name].js'
+            : 'assets/[name]-[hash].js';
+        },
+      }
+    }
+  },
 }));
