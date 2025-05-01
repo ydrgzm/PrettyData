@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { MoonIcon, SunIcon, Download, Copy, Check, Sparkle } from "lucide-react";
-import Editor from "@/components/Editor";
 import { formatJSON, formatXML, formatYAML, minifyJSON, minifyXML, minifyYAML, detectFormat } from "@/lib/formatters";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+// Dynamically import the Editor component for better code splitting
+const Editor = lazy(() => import("@/components/Editor"));
+
+// Loading fallback for the Editor component
+const EditorSkeleton = () => (
+  <div className="w-full h-full flex items-center justify-center bg-muted/30 animate-pulse">
+    <p className="text-muted-foreground">Loading editor...</p>
+  </div>
+);
 
 const Index = () => {
   const { toast } = useToast();
@@ -256,12 +265,14 @@ const Index = () => {
               </Button>
             </div>
             <Card className="border rounded-lg overflow-hidden h-[300px] md:h-[400px] lg:h-[500px] relative shadow-sm transition-all hover:shadow-md">
-              <Editor 
-                value={input} 
-                onChange={handleInputChange} 
-                language={activeTab}
-                isDarkMode={isDarkMode}
-              />
+              <Suspense fallback={<EditorSkeleton />}>
+                <Editor 
+                  value={input} 
+                  onChange={handleInputChange} 
+                  language={activeTab}
+                  isDarkMode={isDarkMode}
+                />
+              </Suspense>
             </Card>
           </div>
 
@@ -311,13 +322,15 @@ const Index = () => {
             </div>
             
             <Card className="border rounded-lg overflow-hidden h-[300px] md:h-[400px] lg:h-[500px] shadow-sm transition-all hover:shadow-md">
-              <Editor 
-                value={output} 
-                onChange={() => {}} 
-                language={activeTab}
-                isDarkMode={isDarkMode}
-                readOnly={true}
-              />
+              <Suspense fallback={<EditorSkeleton />}>
+                <Editor 
+                  value={output} 
+                  onChange={() => {}} 
+                  language={activeTab}
+                  isDarkMode={isDarkMode}
+                  readOnly={true}
+                />
+              </Suspense>
             </Card>
           </div>
         </div>

@@ -1,30 +1,37 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import { lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from './components/ui/toaster';
+import './App.css';
 
-const queryClient = new QueryClient();
+// Dynamically import the page components
+const Index = lazy(() => import('./pages/Index'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
-// Use the same base path as specified in vite.config.ts
-const basename = import.meta.env.BASE_URL;
+// Loading fallback for the pages
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-pulse flex flex-col items-center gap-4">
+      <div className="w-12 h-12 rounded-full bg-indigo-200 dark:bg-indigo-800"></div>
+      <p className="text-muted-foreground">Loading...</p>
+    </div>
+  </div>
+);
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter basename={basename}>
+function App() {
+  const basePath = import.meta.env.BASE_URL || '/';
+  
+  return (
+    <BrowserRouter basename={basePath}>
+      <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          <Route path="/404" element={<NotFound />} />
+          <Route path="*" element={<Navigate to="/404" replace />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </Suspense>
+      <Toaster />
+    </BrowserRouter>
+  );
+}
 
 export default App;
