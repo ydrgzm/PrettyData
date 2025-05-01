@@ -4,6 +4,17 @@
 
 A data formatting and visualization application created by Zeshan Ayub.
 
+## How to deploy on GitHub Pages
+
+To deploy this project on GitHub Pages:
+
+1. Push the code to your GitHub repository
+2. Go to your repository settings (https://github.com/[your-username]/PrettyData/settings/pages)
+3. Under "Build and deployment" > "Source", select "GitHub Actions"
+4. The workflow will automatically build and deploy your site when you push to the main branch
+
+**Important:** You must first enable GitHub Pages in your repository settings before the deployment will work.
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
