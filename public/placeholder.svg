@@ -1,0 +1,13 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#14b8a6" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#f8fafc" />
+  <rect x="100" y="100" width="1000" height="430" rx="15" fill="white" stroke="#e2e8f0" stroke-width="2" />
+  <text x="600" y="300" font-family="Arial, sans-serif" font-size="72" font-weight="bold" text-anchor="middle" fill="url(#gradient)">PrettyData</text>
+  <text x="600" y="380" font-family="Arial, sans-serif" font-size="32" text-anchor="middle" fill="#64748b">Format &amp; validate JSON, YAML, and XML with ease</text>
+  <text x="600" y="480" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#94a3b8">Created by Zeshan Ayub</text>
+</svg>
