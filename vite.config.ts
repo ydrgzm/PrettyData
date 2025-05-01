@@ -36,70 +36,34 @@ export default defineConfig(({ mode }) => ({
         },
         // Implement more granular manual chunking for better code splitting
         manualChunks: (id) => {
-          // Split Monaco Editor into smaller chunks
+          // Handle Monaco Editor with a simplified approach to prevent dependency issues
           if (id.includes('monaco-editor')) {
-            if (id.includes('/language/')) {
-              // Group by language features
-              if (id.includes('/json/')) {
-                return 'monaco-json';
-              }
-              if (id.includes('/html/')) {
-                return 'monaco-html';
-              }
-              if (id.includes('/css/')) {
-                return 'monaco-css';
-              }
-              if (id.includes('/typescript/')) {
-                return 'monaco-ts';
-              }
-              return 'monaco-languages';
+            // Core editor API - this needs to be loaded first
+            if (id.includes('/editor/editor.api')) {
+              return 'monaco-editor-core';
             }
             
-            if (id.includes('/editor/contrib/')) {
-              // Split editor contributions (features) into chunks
-              if (id.includes('/snippet/')) {
-                return 'monaco-feature-snippets';
-              }
-              if (id.includes('/hover/')) {
-                return 'monaco-feature-hover';
-              }
-              if (id.includes('/codeAction/')) {
-                return 'monaco-feature-actions';
-              }
-              if (id.includes('/inlineCompletions/')) {
-                return 'monaco-feature-completions';
-              }
-              if (id.includes('/find/')) {
-                return 'monaco-feature-find';
-              }
-              return 'monaco-features';
+            // Base modules that are required by the editor
+            if (id.includes('/base/')) {
+              return 'monaco-base';
             }
             
+            // Group language modules 
             if (id.includes('/basic-languages/')) {
-              return 'monaco-basic-languages';
+              // Only separate the languages we actually use
+              if (id.includes('/json/') || id.includes('/yaml/') || id.includes('/xml/')) {
+                return 'monaco-used-languages';
+              }
+              return 'monaco-other-languages';
             }
             
-            // Core editor components
-            if (id.includes('/editor/browser/')) {
-              return 'monaco-editor-browser';
-            }
-            if (id.includes('/editor/common/')) {
-              return 'monaco-editor-common';
-            }
-            if (id.includes('/editor/standalone/')) {
-              return 'monaco-editor-standalone';
+            // Main editor functionality
+            if (id.includes('/editor/')) {
+              return 'monaco-editor-features';
             }
             
-            // Base platform components
-            if (id.includes('/base/common/')) {
-              return 'monaco-base-common';
-            }
-            if (id.includes('/base/browser/')) {
-              return 'monaco-base-browser';
-            }
-
-            // Default for other Monaco files
-            return 'monaco-core';
+            // Other Monaco modules
+            return 'monaco-extras';
           }
           
           // Put React and related packages in the vendor chunk

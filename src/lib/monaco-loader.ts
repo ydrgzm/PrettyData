@@ -46,9 +46,15 @@ export const loadMonaco = async (): Promise<typeof import('monaco-editor')> => {
     };
   }
 
-  // Start loading Monaco
-  monacoPromise = import('monaco-editor').then(m => {
-    monaco = m;
+  // Use a more cautious loading approach to avoid initialization order issues
+  monacoPromise = Promise.all([
+    // Load core Monaco modules in a specific order to avoid initialization issues
+    import('monaco-editor/esm/vs/editor/editor.api'),
+    // Pre-load some essential Monaco modules to ensure they're available
+    import('monaco-editor/esm/vs/base/common/platform'),
+    import('monaco-editor/esm/vs/editor/common/core/range')
+  ]).then(([monacoApi]) => {
+    monaco = monacoApi;
     return monaco;
   });
   
@@ -73,12 +79,20 @@ export const loadLanguage = async (
       // JSON is built into Monaco core, nothing extra to load
       break;
     case 'yaml':
-      // Load YAML language support
-      await import('monaco-editor/esm/vs/basic-languages/yaml/yaml');
+      try {
+        // Load YAML language support
+        await import('monaco-editor/esm/vs/basic-languages/yaml/yaml');
+      } catch (e) {
+        console.warn('Failed to load YAML language support:', e);
+      }
       break;
     case 'xml':
-      // Load XML/HTML language support
-      await import('monaco-editor/esm/vs/basic-languages/xml/xml');
+      try {
+        // Load XML/HTML language support
+        await import('monaco-editor/esm/vs/basic-languages/xml/xml');
+      } catch (e) {
+        console.warn('Failed to load XML language support:', e);
+      }
       break;
   }
 };
