@@ -19,8 +19,8 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: 'dist',
-    // Increase chunk size warning limit to 1000kB to avoid unnecessary warnings
-    chunkSizeWarningLimit: 1000,
+    // Increase chunk size warning limit
+    chunkSizeWarningLimit: 2000,
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html'),
@@ -34,36 +34,11 @@ export default defineConfig(({ mode }) => ({
             ? '[name].js'
             : 'assets/[name]-[hash].js';
         },
-        // Implement more granular manual chunking for better code splitting
+        // Simpler manual chunking strategy to prevent dependency issues
         manualChunks: (id) => {
-          // Handle Monaco Editor with a simplified approach to prevent dependency issues
+          // Keep all Monaco editor related code in one chunk to avoid dependency issues
           if (id.includes('monaco-editor')) {
-            // Core editor API - this needs to be loaded first
-            if (id.includes('/editor/editor.api')) {
-              return 'monaco-editor-core';
-            }
-            
-            // Base modules that are required by the editor
-            if (id.includes('/base/')) {
-              return 'monaco-base';
-            }
-            
-            // Group language modules 
-            if (id.includes('/basic-languages/')) {
-              // Only separate the languages we actually use
-              if (id.includes('/json/') || id.includes('/yaml/') || id.includes('/xml/')) {
-                return 'monaco-used-languages';
-              }
-              return 'monaco-other-languages';
-            }
-            
-            // Main editor functionality
-            if (id.includes('/editor/')) {
-              return 'monaco-editor-features';
-            }
-            
-            // Other Monaco modules
-            return 'monaco-extras';
+            return 'monaco-editor';
           }
           
           // Put React and related packages in the vendor chunk
@@ -77,13 +52,6 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('@radix-ui/') || 
               id.includes('lucide-react/')) {
             return 'vendor-ui';
-          }
-          
-          // Put formatter libraries in a separate chunk
-          if (id.includes('node_modules/yaml') ||
-              id.includes('node_modules/prettier') ||
-              id.includes('node_modules/xml-formatter')) {
-            return 'formatters';
           }
           
           // Default vendor chunking for other node_modules
