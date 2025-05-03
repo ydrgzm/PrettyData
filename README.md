@@ -4,6 +4,14 @@
 
 A data formatting and visualization application created by Zeshan Ayub.
 
+## Features
+- Format, validate, minify, and pretty-print JSON, YAML, and XML
+- Auto-detect data type
+- Copy to clipboard, download as file
+- Dark/light/high-contrast mode
+- Responsive, accessible, and mobile-friendly UI
+- No backend, no tracking, no authentication
+
 ## How to deploy on GitHub Pages
 
 To deploy this project on GitHub Pages:
